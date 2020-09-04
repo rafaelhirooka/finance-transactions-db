@@ -3,6 +3,7 @@ import { getCustomRepository, getRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
 import Category from '../models/Category';
 import TransactionsRepository from '../repositories/TransactionsRepository';
+import AppError from '../errors/AppError';
 
 interface Request {
   title: string;
@@ -19,6 +20,13 @@ class CreateTransactionService {
     category: CategoryName,
   }: Request): Promise<Transaction> {
     const transactionsRepository = getCustomRepository(TransactionsRepository);
+
+    if (type === 'outcome') {
+      const { total } = await transactionsRepository.getBalance();
+      if (total - value <= 0) {
+        throw new AppError('Seu pobre');
+      }
+    }
 
     let category = await getRepository(Category).findOne({
       where: {
