@@ -17,7 +17,7 @@ class CreateTransactionService {
     title,
     value,
     type,
-    category: CategoryName,
+    category: categoryName,
   }: Request): Promise<Transaction> {
     const transactionsRepository = getCustomRepository(TransactionsRepository);
 
@@ -30,13 +30,13 @@ class CreateTransactionService {
 
     let category = await getRepository(Category).findOne({
       where: {
-        title: CategoryName,
+        title: categoryName,
       },
     });
 
     if (!category) {
       const newCategory = getRepository(Category).create({
-        title: CategoryName,
+        title: categoryName,
       });
       await getRepository(Category).save(newCategory);
 
